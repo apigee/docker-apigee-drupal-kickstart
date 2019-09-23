@@ -16,7 +16,7 @@
 
 set -x
 
-export ADMIN_USER="admin"
+export ADMIN_USER="admin@example.com"
 export ADMIN_PASS="pass"
 
 docker rm -f some-d8 || true
