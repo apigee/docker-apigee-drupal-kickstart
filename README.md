@@ -19,6 +19,9 @@ export APIGEE_ORG=xxx
 export APIGEE_USER=xxx
 export APIGEE_PASS=xxx
 
+#optionally if you are Private Cloud
+export APIGEE_MGMT=(management server url)
+
 # build and run the container
 ./start.sh
 ```
