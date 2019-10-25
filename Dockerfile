@@ -26,6 +26,7 @@ RUN apt-get install -y curl git ranger libpng-dev unzip vim sqlite3
 RUN docker-php-ext-install gd bcmath
 
 # install and setup drupal tools
+RUN echo "memory_limit = -1;" > /usr/local/etc/php/php.ini
 WORKDIR /var/www
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php
