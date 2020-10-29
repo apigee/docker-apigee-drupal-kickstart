@@ -16,9 +16,6 @@ FROM drupal:8-apache
 
 ARG ADMIN_USER
 ARG ADMIN_PASS
-ARG APIGEE_USER
-ARG APIGEE_PASS
-ARG APIGEE_ORG
 
 # install dependencies
 RUN apt-get update
@@ -65,7 +62,7 @@ RUN ../vendor/drush/drush/drush config:set key.key.apigee_edge_connection_defaul
 ADD ./config ./config
 RUN ../vendor/drush/drush/drush cim --partial --source=$(pwd)/config
 
-# set permissions 
+# set permissions
 WORKDIR /var/www/portal
 ADD ./set-permissions.sh ./set-permissions.sh
 RUN chmod +x ./set-permissions.sh && ./set-permissions.sh --drupal_path=$(pwd)/web --drupal_user=root --httpd_group=www-data
