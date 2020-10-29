@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Docker PR Build
+name: Docker Build
 on:
   pull_request:
   workflow_dispatch:
   push:
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Build Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo

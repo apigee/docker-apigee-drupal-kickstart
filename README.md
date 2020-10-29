@@ -22,6 +22,9 @@ export APIGEE_PASS=xxx
 #optionally if you are Private Cloud
 export APIGEE_MGMT=(management server url)
 
+# run a pre-built image
+./run.sh
+
 # build and run the container
 ./start.sh
 ```
