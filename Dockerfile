@@ -19,7 +19,12 @@ ARG ADMIN_PASS
 
 # install dependencies
 RUN apt-get update
-RUN apt-get install -y curl git ranger libpng-dev unzip vim sqlite3
+RUN apt-get update && apt-get install -y curl \
+  git ranger unzip vim sqlite3 libmagick++-dev \
+  libmagickwand-dev libpq-dev libfreetype6-dev \
+  libjpeg62-turbo-dev libpng-dev libwebp-dev libxpm-dev
+RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ \
+  --with-freetype=/usr/include/
 RUN docker-php-ext-install gd bcmath
 
 # install and setup drupal tools
