@@ -16,14 +16,22 @@
 
 export ADMIN_USER="admin@example.com"
 export ADMIN_PASS="pass"
+export DB_URL="sqlite://sites/default/files/.ht.sqlite"
+
 export APIGEE_MGMT=${APIGEE_MGMT:-https://api.enterprise.apigee.com/v1}
 
-docker rm -f some-d8 || true
-docker build --build-arg ADMIN_USER --build-arg ADMIN_PASS -t lb/d8 .
-docker run --name some-d8 -p 8080:80 -d \
+docker rm -f apigee-d8 || true
+
+docker build -t apigee/docker-apigee-drupal-kickstart:latest .
+
+docker run --name apigee-d8 -p 8080:80 -d \
 	-e APIGEE_EDGE_AUTH_TYPE=basic \
 	-e APIGEE_EDGE_ORGANIZATION=$APIGEE_ORG \
 	-e APIGEE_EDGE_USERNAME=$APIGEE_USER \
 	-e APIGEE_EDGE_PASSWORD=$APIGEE_PASS \
 	-e APIGEE_EDGE_ENDPOINT=$APIGEE_MGMT \
-	lb/d8 
+	-e ADMIN_USER \
+	-e ADMIN_PASS \
+	-e DB_URL \
+	-v $PWD/portal-files:/var/www/portal/web/sites/default/files \
+	apigee/docker-apigee-drupal-kickstart:latest

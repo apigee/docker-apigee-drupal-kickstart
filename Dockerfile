@@ -14,9 +14,6 @@
 
 FROM drupal:8-apache
 
-ARG ADMIN_USER
-ARG ADMIN_PASS
-
 # install dependencies
 RUN apt-get update
 RUN apt-get update && apt-get install -y curl \
@@ -47,20 +44,8 @@ RUN yes | ./vendor/drush/drush/drush init
 RUN sed -i 's/DocumentRoot .*/DocumentRoot \/var\/www\/portal\/web/' /etc/apache2/sites-available/000-default.conf
 RUN mkdir -p /var/www/portal/web/sites/default/files
 
-
-# perform site install
-WORKDIR /var/www/portal/web
-RUN ../vendor/drush/drush/drush si apigee_devportal_kickstart --db-url=sqlite://sites/default/files/.ht.sqlite --site-name="Apigee Developer Portal" --account-name="$ADMIN_USER" --account-pass="$ADMIN_PASS" --no-interaction
-
-# enable dependencies
-RUN yes | ../vendor/drush/drush/drush en rest restui basic_auth
-
-# configure apigee connection credentials from environment variables
-RUN ../vendor/drush/drush/drush config:set key.key.apigee_edge_connection_default key_provider apigee_edge_environment_variables --no-interaction
-
 # import configuration files for rest module
-ADD ./config ./config
-RUN yes | ../vendor/drush/drush/drush cim --partial --source=$(pwd)/config
+ADD ./config /var/www/portal/web/config
 
 # set up private filesystem
 RUN mkdir -p /var/www/private
@@ -71,4 +56,12 @@ RUN echo "\$settings['file_private_path'] = '/var/www/private';" >> /var/www/por
 # set permissions
 WORKDIR /var/www/portal
 ADD ./set-permissions.sh ./set-permissions.sh
-RUN chmod +x ./set-permissions.sh && ./set-permissions.sh --drupal_path=$(pwd)/web --drupal_user=root --httpd_group=www-data
+RUN chmod +x ./set-permissions.sh && ./set-permissions.sh --drupal_path=/var/www/portal/web --drupal_user=root --httpd_group=www-data
+ADD ./drupal-install.sh ./drupal-install.sh
+RUN chmod +x ./drupal-install.sh
+
+ENV ADMIN_USER=admin@example.com
+ENV ADMIN_PASS=pass
+ENV DB_URL=sqlite://sites/default/files/.ht.sqlite
+
+ENTRYPOINT ./drupal-install.sh && apache2-foreground
