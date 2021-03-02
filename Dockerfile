@@ -62,6 +62,12 @@ RUN ../vendor/drush/drush/drush config:set key.key.apigee_edge_connection_defaul
 ADD ./config ./config
 RUN yes | ../vendor/drush/drush/drush cim --partial --source=$(pwd)/config
 
+# set up private filesystem
+RUN mkdir -p /var/www/private
+RUN usermod -aG root www-data
+RUN chmod g+r,g+w /var/www/private
+RUN echo "\$settings['file_private_path'] = '/var/www/private';" >> /var/www/portal/web/sites/default/settings.php
+
 # set permissions
 WORKDIR /var/www/portal
 ADD ./set-permissions.sh ./set-permissions.sh
