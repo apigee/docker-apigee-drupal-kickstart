@@ -1,4 +1,3 @@
-
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,13 +29,13 @@ services:
     - DRUPAL_DATABASE_HOST=apigee-kickstart-database
     - DRUPAL_DATABASE_PORT=3306
     - DRUPAL_DATABASE_DRIVER=mysql
+    - AUTO_INSTALL_PORTAL=true
     links:
     - apigee-kickstart-database
     volumes:
-    - /var/www/devportal/code/web/sites/default/files
-    - /var/www/devportal/code/web/sites/default/private
-    - /var/www/devportal/tmp
-    - ./config:/var/www/devportal/config:delegated
+    - /app/code/web/sites/default/files
+    - /app/code/web/sites/default/private
+    - /app/tmp
   apigee-kickstart-database:
     image: mariadb:latest
     volumes:

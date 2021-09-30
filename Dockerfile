@@ -41,26 +41,27 @@ RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/devportal/code/web
+WORKDIR /app/code/web
 
-RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/composer.json -o /var/www/devportal/code/composer.json \
-    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/LICENSE.txt -o /var/www/devportal/code/LICENSE.txt
+RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/composer.json -o /app/code/composer.json \
+    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/LICENSE.txt -o /app/code/LICENSE.txt
 
 #OVERRIDE custom code folder if any
-COPY code /var/www/devportal/code
+COPY code /app/code
+COPY config /app/default-config
 
-RUN php -d memory_limit=-1 /usr/bin/composer install -o --working-dir=/var/www/devportal/code --no-interaction \
-    && php -d memory_limit=-1 /usr/bin/composer require drush/drush -o --working-dir=/var/www/devportal/code --no-interaction \
-    && ln -sf /var/www/devportal/code/vendor/bin/drush /usr/bin/drush
+RUN php -d memory_limit=-1 /usr/bin/composer install -o --working-dir=/app/code --no-interaction \
+    && php -d memory_limit=-1 /usr/bin/composer require drush/drush -o --working-dir=/app/code --no-interaction \
+    && ln -sf /app/code/vendor/bin/drush /usr/bin/drush
 
 
-RUN mkdir -p /var/www/devportal/code/web/sites/default/files \
-    && mkdir -p /var/www/devportal/code/web/sites/default/private \
-    && mkdir -p /var/www/devportal/tmp \
-    && mkdir -p /var/www/devportal/config \
-    && chown -R www-data:www-data /var/www/devportal
+RUN mkdir -p /app/code/web/sites/default/files \
+    && mkdir -p /app/code/web/sites/default/private \
+    && mkdir -p /app/tmp \
+    && mkdir -p /app/config \
+    && chown -R www-data:www-data /app
 
-COPY container-assets/settings.php /var/www/devportal/code/web/sites/default/settings.php
+COPY container-assets/settings.php /app/code/web/sites/default/settings.php
 
 RUN apt-get install -y nginx \
     && unlink /etc/nginx/sites-enabled/default
