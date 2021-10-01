@@ -15,16 +15,12 @@ if [ ! -f "$FILE" ]; then
       --no-interaction
     $DRUSH en rest restui basic_auth
     $DRUSH config:set key.key.apigee_edge_connection_default key_provider apigee_edge_environment_variables --no-interaction
-    find /app/code/web/sites/default/files -type d -exec chmod ug=rwx,o= '{}' \;
-    find /app/code/web/sites/default/private -type d -exec chmod ug=rwx,o= '{}' \;
-    find /app/config -type d -exec chmod ug=rwx,o= '{}' \;
     $DRUSH cim --partial --source=/app/default-config
-    chown -R www-data:www-data /app
     $DRUSH apigee-edge:sync --no-interaction
+    /set-permissions.sh --drupal_path=/app/code/web --drupal_user=www-data --httpd_group=www-data
   fi
 fi
 
-chown -R www-data:www-data /app
 $DRUSH updb -y
 $DRUSH cr
 

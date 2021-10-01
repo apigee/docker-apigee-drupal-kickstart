@@ -54,14 +54,20 @@ RUN php -d memory_limit=-1 /usr/bin/composer install -o --working-dir=/app/code 
     && php -d memory_limit=-1 /usr/bin/composer require drush/drush -o --working-dir=/app/code --no-interaction \
     && ln -sf /app/code/vendor/bin/drush /usr/bin/drush
 
+COPY container-assets/startup.sh /startup.sh
+COPY container-assets/set-permissions.sh /set-permissions.sh
+RUN chmod +x /startup.sh /set-permissions.sh
+
 
 RUN mkdir -p /app/code/web/sites/default/files \
     && mkdir -p /app/code/web/sites/default/private \
     && mkdir -p /app/tmp \
-    && mkdir -p /app/config \
-    && chown -R www-data:www-data /app
+    && mkdir -p /app/config
 
 COPY container-assets/settings.php /app/code/web/sites/default/settings.php
+
+RUN /set-permissions.sh --drupal_path=/app/code/web --drupal_user=www-data --httpd_group=www-data \
+  && chown -R www-data:www-data /app/code/vendor
 
 RUN apt-get install -y nginx \
     && unlink /etc/nginx/sites-enabled/default
@@ -72,7 +78,5 @@ EXPOSE 80
 
 RUN apt-get install -y supervisor
 COPY container-assets/supervisor.conf /etc/supervisor/conf.d/drupal-supervisor.conf
-COPY container-assets/startup.sh /startup.sh
-RUN chmod +x /startup.sh
 
 CMD ["/startup.sh"]

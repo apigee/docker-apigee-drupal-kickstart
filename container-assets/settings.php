@@ -14,7 +14,7 @@ $settings['allow_authorize_operations'] = FALSE;
 $settings['file_public_path'] = 'sites/default/files';
 $settings['file_private_path'] = '/app/code/web/sites/default/private';
 $settings['config_sync_directory'] = $settings['file_private_path'] . "/config";
-$settings['file_temp_path'] = '/app/tmp';
+$settings['file_temp_path'] = '/tmp';
 
 
 $salt_file = $settings['file_private_path'] . "/salt.txt";
