@@ -32,10 +32,11 @@ services:
     - AUTO_INSTALL_PORTAL=true
     links:
     - apigee-kickstart-database
+    depends_on:
+    - apigee-kickstart-database
     volumes:
-    - /app/code/web/sites/default/files
-    - /app/code/web/sites/default/private
-    - /app/tmp
+    - drupal-public-files:/app/code/web/sites/default/files
+    - drupal-private-files:/app/code/web/sites/default/private
   apigee-kickstart-database:
     image: mariadb:latest
     volumes:
@@ -47,3 +48,5 @@ services:
     - MYSQL_ROOT_PASSWORD=rootpasswd
 volumes:
   apigee-kickstart-database-volume:
+  drupal-public-files:
+  drupal-private-files:

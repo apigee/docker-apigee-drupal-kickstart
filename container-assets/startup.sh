@@ -8,7 +8,6 @@ FILE="/app/code/web/sites/default/private/salt.txt"
 
 if [ ! -f "$FILE" ]; then
   if [ ! -z "$AUTO_INSTALL_PORTAL" ]; then
-    sleep 10 #Sleep for 10 seconds to give the mariadb docker container time to startup
     $DRUSH si apigee_devportal_kickstart --site-name="Apigee Developer Portal" \
       --account-name="$ADMIN_USER" --account-mail="$ADMIN_EMAIL" \
       --account-pass="$ADMIN_PASS" --site-mail="noreply@apigee.com" \
