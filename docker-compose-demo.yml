@@ -46,9 +46,9 @@ services:
     - MYSQL_ROOT_PASSWORD=rootpasswd
     healthcheck:
       test: [ "CMD-SHELL", 'mysql --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute="show tables;" --skip-column-names -B' ]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 4
+      retries: 6
 volumes:
   apigee-kickstart-database-volume:
   drupal-public-files:
