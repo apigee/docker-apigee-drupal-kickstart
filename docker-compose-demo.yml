@@ -1,0 +1,50 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: '3'
+services:
+  apigee-kickstart:
+    image: ghcr.io/apigee/docker-apigee-drupal-kickstart:latest
+    ports:
+    - "8080:80"
+    env_file:
+    - apigee.env
+    environment:
+    - DRUPAL_DATABASE_NAME=apigee_devportal
+    - DRUPAL_DATABASE_USER=dbuser
+    - DRUPAL_DATABASE_PASSWORD=passw0rd
+    - DRUPAL_DATABASE_HOST=apigee-kickstart-database
+    - DRUPAL_DATABASE_PORT=3306
+    - DRUPAL_DATABASE_DRIVER=mysql
+    - AUTO_INSTALL_PORTAL=true
+    links:
+    - apigee-kickstart-database
+    depends_on:
+    - apigee-kickstart-database
+    volumes:
+    - drupal-public-files:/app/code/web/sites/default/files
+    - drupal-private-files:/app/code/web/sites/default/private
+  apigee-kickstart-database:
+    image: mariadb:latest
+    volumes:
+    - apigee-kickstart-database-volume:/var/lib/mysql:delegated
+    environment:
+    - MYSQL_DATABASE=apigee_devportal
+    - MYSQL_USER=dbuser
+    - MYSQL_PASSWORD=passw0rd
+    - MYSQL_ROOT_PASSWORD=rootpasswd
+volumes:
+  apigee-kickstart-database-volume:
+  drupal-public-files:
+  drupal-private-files:
