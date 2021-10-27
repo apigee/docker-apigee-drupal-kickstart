@@ -14,6 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export AUTO_INSTALL_PORTAL=true
-
-docker compose --file=docker-compose-demo.yml up
+docker compose -f docker-compose-demo.yml up

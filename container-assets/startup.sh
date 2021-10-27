@@ -40,4 +40,4 @@ fi
 
 $DRUSH cr || true
 
-supervisord --nodaemon
+supervisord --nodaemon -c /etc/supervisor/conf.d/drupal-supervisor.conf
