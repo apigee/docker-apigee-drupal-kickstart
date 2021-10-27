@@ -15,4 +15,5 @@
 # limitations under the License.
 
 export AUTO_INSTALL_PORTAL=true
+
 docker compose --file=docker-compose-demo.yml up
