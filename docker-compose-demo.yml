@@ -27,7 +27,6 @@ services:
     - DRUPAL_DATABASE_HOST=apigee-kickstart-database
     - DRUPAL_DATABASE_PORT=3306
     - DRUPAL_DATABASE_DRIVER=mysql
-    - AUTO_INSTALL_PORTAL=true
     links:
     - apigee-kickstart-database
     depends_on:

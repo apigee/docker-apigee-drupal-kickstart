@@ -23,7 +23,7 @@ Run the below command to run start the container:
 # build and run the container
 ./start.sh
 
-# run a pre-built image
+# run a pre-built image (ghcr.io/apigee/docker-apigee-drupal-kickstart)
 ./run.sh
 ```
 
