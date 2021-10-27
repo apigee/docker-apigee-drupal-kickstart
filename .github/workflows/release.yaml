@@ -36,9 +36,7 @@ jobs:
         with:
           tags: |
             ghcr.io/${{github.repository_owner}}/docker-apigee-drupal-kickstart:${{ github.event.release.tag_name }}
-          build-args: |
-            ADMIN_USER=admin@example.com
-            ADMIN_PASS=pass
+            ghcr.io/${{github.repository_owner}}/docker-apigee-drupal-kickstart:stable
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           push: true
