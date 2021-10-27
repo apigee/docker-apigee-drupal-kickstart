@@ -18,7 +18,7 @@ export APIGEE_MGMT=${APIGEE_MGMT:-https://api.enterprise.apigee.com/v1}
 
 docker rm -f apigee-devportal-db || true
 
-docker run --name apigee-devportal-db -p 3306:3306 -d \
+docker run --name apigee-devportal-db -p 83306:3306 -d \
     -e MYSQL_DATABASE=apigee_devportal \
     -e MYSQL_USER=dbuser \
     -e MYSQL_PASSWORD=passw0rd \
@@ -32,7 +32,7 @@ docker run --name apigee-devportal -p 8080:80 --env-file=./apigee.env \
     -e DRUPAL_DATABASE_USER=dbuser \
     -e DRUPAL_DATABASE_PASSWORD=passw0rd \
     -e DRUPAL_DATABASE_HOST=host.docker.internal \
-    -e DRUPAL_DATABASE_PORT=3306 \
+    -e DRUPAL_DATABASE_PORT=83306 \
     -e DRUPAL_DATABASE_DRIVER=mysql \
     -e AUTO_INSTALL_PORTAL=true \
 	ghcr.io/apigee/docker-apigee-drupal-kickstart:latest
