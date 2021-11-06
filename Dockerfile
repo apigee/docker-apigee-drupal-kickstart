@@ -22,7 +22,8 @@ ENV DRUPAL_DATABASE_NAME=devportal \
     DRUPAL_DATABASE_PORT=3306 \
     DRUPAL_DATABASE_DRIVER=mysql \
     ADMIN_USER=admin \
-    ADMIN_PASS=admin
+    ADMIN_PASS=admin \
+    AUTO_INSTALL_PORTAL=false
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
