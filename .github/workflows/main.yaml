@@ -27,6 +27,10 @@ jobs:
   push_to_registry:
     name: Build Docker image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -50,3 +54,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+git@github:
+  com:giteshk-org/docker-apigee-drupal-kickstart:
+    git:
