@@ -16,6 +16,9 @@ name: Docker Release Build
 on:
   release:
     types: [published]
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
@@ -28,15 +31,13 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ghcr.io/${{github.repository_owner}}/docker-apigee-drupal-kickstart:${{ github.event.release.tag_name }}
-            ghcr.io/${{github.repository_owner}}/docker-apigee-drupal-kickstart:stable
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          push: true
+            ${{ env.REGISTRY }}/${{github.repository_owner}}/docker-apigee-drupal-kickstart:${{ github.event.release.tag_name }}
+            ${{ env.REGISTRY }}/${{github.repository_owner}}/docker-apigee-drupal-kickstart:stable
+          push: ${{ github.event_name != 'pull_request' }}
