@@ -34,6 +34,9 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
         # Login against a Docker registry except on PR
         # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -42,7 +45,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ github.token }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v3
