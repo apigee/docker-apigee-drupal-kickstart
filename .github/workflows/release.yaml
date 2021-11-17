@@ -19,11 +19,15 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  IMAGE_NAME: docker-apigee-drupal-kickstart
+  IMAGE_NAME: ${{github.repository_owner}}/docker-apigee-drupal-kickstart
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -32,12 +36,12 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ github.token }}
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{github.repository_owner}}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=tag
             type=raw,stable
