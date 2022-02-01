@@ -53,6 +53,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
+            type=schedule,pattern=nightly
             type=raw,latest
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
