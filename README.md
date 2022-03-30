@@ -9,6 +9,11 @@ This setup uses Maria DB and creates a volume to store uploaded files.
 
 See [here](https://github.com/apigee/apigee-devportal-kickstart-drupal) for the Drupal Installation Profile that this image is based on.
 
+## Prerequisites
+
+- Apigee Organization
+- `docker` and `docker-compose` installed
+
 ## Features
 - Apigee Kickstart profile installed
 - Drupal REST UI installed
