@@ -52,7 +52,6 @@ COPY code /app/code
 COPY config /app/default-config
 
 RUN php -d memory_limit=-1 /usr/bin/composer install -o --working-dir=/app/code --no-interaction \
-    && php -d memory_limit=-1 /usr/bin/composer require drush/drush -o --working-dir=/app/code --no-interaction \
     && ln -sf /app/code/vendor/bin/drush /usr/bin/drush
 
 COPY container-assets/startup.sh /startup.sh
