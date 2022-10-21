@@ -14,7 +14,7 @@
 
 FROM composer:2 as composer
 
-FROM php:7.4-fpm
+FROM php:8.1-fpm
 ENV DRUPAL_DATABASE_NAME=devportal \
     DRUPAL_DATABASE_USER=dbuser \
     DRUPAL_DATABASE_PASSWORD=dbpass \
@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y \
         git zip unzip default-mysql-client\
         curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd bcmath opcache xmlrpc pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd bcmath opcache  pdo_mysql
 
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
     && sed -i 's/\(^max_execution_time = 30$\)/max_execution_time = 300/g' /usr/local/etc/php/php.ini \
