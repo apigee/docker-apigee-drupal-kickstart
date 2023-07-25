@@ -44,8 +44,8 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app/code/web
 
-RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/composer.json -o /app/code/composer.json \
-    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/9.x/LICENSE.txt -o /app/code/LICENSE.txt
+RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/10.x/composer.json -o /app/code/composer.json \
+    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/10.x/LICENSE.txt -o /app/code/LICENSE.txt
 
 #OVERRIDE custom code folder if any
 COPY code /app/code
