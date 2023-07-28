@@ -40,7 +40,7 @@ services:
     - drupal-public-files:/app/code/web/sites/default/files
     - drupal-private-files:/app/code/web/sites/default/private
   apigee-kickstart-database:
-    image: mariadb:10.6
+    image: mariadb:lts
     volumes:
     - apigee-kickstart-database-volume:/var/lib/mysql:delegated
     environment:
