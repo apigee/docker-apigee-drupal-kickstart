@@ -76,30 +76,30 @@ Default admin credentials for the portal are: `admin@example.com` and `pass`, bu
 	```
 
 3. SSH into the VM and run commands in next step
-  ```
+ 	 ```
     gcloud compute ssh  $VM_NAME --zone=$ZONE --project=$PROJECT_NAME
-  ```
+  	```
 
 4. Login into the GCE instance and run the following commands 
-  ```
+  	```
     wget https://gist.githubusercontent.com/giteshk/35875a36decd24c61a9d0fb5c6afad42/raw/6c0ec1d4dc1c0d16e42d971404509f53628ec4da/startup.sh
     chmod +x startup.sh
     bash ./startup.sh
-  ```
+  	```
 
 5. Run through the Drupal installation wizard @ http://GCE-INSTANCE-EXTERNAL-IP
   External IP can be located using :
-  ```
+  	```
     gcloud compute instances describe $VM_NAME \
       --format='get(networkInterfaces[0].accessConfigs[0].natIP)' \
       --zone=$ZONE --project=$PROJECT_NAME
-  ```
+  	```
 
 6.  Clean up commands:
-  ```
+  	```
     gcloud compute --project=$PROJECT_NAME firewall-rules delete $FIREWALL_NAME --quiet
     gcloud compute instances delete $VM_NAME --project=$PROJECT_NAME  --zone=$ZONE --quiet
-  ```
+  	```
 
 
 ## Disclaimer
