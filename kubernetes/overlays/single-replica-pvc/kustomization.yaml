@@ -1,0 +1,12 @@
+# kubernetes/overlays/single-replica-pvc/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: apigee-devportal
+
+resources:
+- ../../base
+- apigee-kickstart-pvc.yml
+
+patches:
+- path: deployment-patch.yaml

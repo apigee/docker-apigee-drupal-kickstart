@@ -1,0 +1,13 @@
+# kubernetes/overlays/single-replica-pvc/deployment-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigee-kickstart
+spec:
+  replicas: 1
+  template:
+    spec:
+      volumes:
+      - name: drupal-files
+        persistentVolumeClaim:
+          claimName: drupal-files

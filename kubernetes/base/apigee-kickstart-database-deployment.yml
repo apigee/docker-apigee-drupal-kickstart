@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigee-kickstart-database
+  namespace: apigee-devportal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apigee-kickstart-database
+  template:
+    metadata:
+      labels:
+        app: apigee-kickstart-database
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:lts
+        ports:
+        - containerPort: 3306
+        envFrom:
+        - secretRef:
+            name: apigee-kickstart-database-secret
+        volumeMounts:
+        - name: apigee-kickstart-database-volume
+          mountPath: /var/lib/mysql
+        readinessProbe:
+          exec:
+            command:
+            - "sh"
+            - "-c"
+            - "mariadb --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute=\"show tables;\" --skip-column-names -B"
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+      volumes:
+      - name: apigee-kickstart-database-volume
+        persistentVolumeClaim:
+          claimName: apigee-kickstart-database-volume
