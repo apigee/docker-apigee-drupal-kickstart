@@ -1,106 +1,137 @@
-Apigee Dev Portal Kickstart Drupal + Docker
----
+# Apigee Dev Portal Kickstart Drupal + Docker
 
-Using the `quick-start` command is great on your local machine, but doesn't play nice in a Docker container.
+This repository provides a simple setup to run the [Apigee Drupal Kickstart](https://github.com/apigee/apigee-devportal-kickstart-drupal) in a Docker container.
 
-Here is simple setup that lets you run the Apigee Drupal Kickstarter in a Docker container. This image is for local development purposes. This is not intended for a production setup. Please refer to the [Documentation](https://docs.apigee.com/api-platform/publish/drupal/open-source-drupal-8) for installation, configuration and production hosting considerations.
+This setup is intended for **local development purposes only** and is not recommended for a production environment. For production deployments, please refer to the [Kubernetes Deployment](#kubernetes-deployment) section and the official [Apigee documentation](https://cloud.google.com/apigee/docs/api-platform/publish/drupal/open-source-drupal) for installation, configuration, and hosting considerations.
 
-This setup uses Maria DB and creates a volume to store uploaded files.
+## Table of Contents
 
-See [here](https://github.com/apigee/apigee-devportal-kickstart-drupal) for the Drupal Installation Profile that this image is based on.
+- [Prerequisites](#prerequisites)
+- [Features](#features)
+- [Docker Compose Usage](#docker-compose-usage)
+- [Kubernetes Deployment](#kubernetes-deployment)
+- [Demo on Google Compute Engine](#demo-on-google-compute-engine)
+- [Disclaimer](#disclaimer)
 
 ## Prerequisites
 
-- Apigee Organization
-- `docker` and `docker-compose` installed
+Before you begin, ensure you have the following installed:
+
+- An [Apigee Organization](https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (for GCE demo)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (for Kubernetes deployment)
+- [Kustomize](https://kustomize.io/) (for Kubernetes deployment)
 
 ## Features
+
 - Apigee Kickstart profile installed
 - Drupal REST UI installed
-- REST endpoints configure for Apigee Entities
+- REST endpoints configured for Apigee Entities
 
-## Usage
-Update the details of your Edge instance in the apigee.env file
-Adjust values of any other variables that are relevant.
+## Docker Compose Usage
 
-Run the below command to run start the container:
-```
-# build and run the container
-./start.sh
+This setup uses Docker Compose to run the Drupal portal and a MariaDB database in separate containers.
 
-# run a pre-built image (ghcr.io/apigee/docker-apigee-drupal-kickstart)
-./run.sh
-```
+1.  **Configure your Apigee instance**:
+    Update the details of your Apigee Edge instance in the `apigee.env` file. Adjust the values of any other variables as needed.
 
-If you want to rebuild the docker image run the below command:
-```
-docker compose up --build
-```
+2.  **Choose a startup script**:
 
-Navigate to `localhost:8080` and you will see an Apigee Portal installed with demo content.
+    -   `./start.sh`: This script will **build the Docker image** from the `Dockerfile` and then start the containers. It sets the `AUTO_INSTALL_PORTAL=true` environment variable, which will automatically install the Drupal site with the Apigee Kickstart profile. This is recommended for the first time you run the setup.
 
-Default admin credentials for the portal are: `admin@example.com` and `pass`, but you can change these in `apigee.env`.
+        ```bash
+        # Build the image and run the containers with auto-install
+        ./start.sh
+        ```
 
-## Demo Apigee Kickstart on Google Compute instance with docker image
-1. Setup variables
-   ```
-    export PROJECT_NAME=gcp-project-1
+    -   `./run.sh`: This script will use a **pre-built Docker image** from `ghcr.io/apigee/docker-apigee-drupal-kickstart` to start the containers. It sets `AUTO_INSTALL_PORTAL=false`, which means you will need to manually go through the Drupal installation wizard in your browser.
+
+        ```bash
+        # Run a pre-built image without auto-install
+        ./run.sh
+        ```
+
+3.  **Access the portal**:
+    Once the containers are running, navigate to `http://localhost:8080` in your web browser.
+
+    If you used `./start.sh`, you will see a fully installed Apigee Portal with demo content. The default admin credentials are `admin@example.com` and `pass` (these can be changed in `apigee.env`).
+
+    If you used `./run.sh`, you will be guided through the Drupal installation wizard.
+
+## Kubernetes Deployment
+
+For a more robust and scalable deployment, you can use the provided Kubernetes manifests to deploy the Apigee Drupal Kickstart application to a Kubernetes cluster.
+
+The `kubernetes` directory contains all the necessary files and instructions. It uses [Kustomize](https://kustomize.io/) to manage different configuration variants.
+
+-   **`kubernetes/base`**: Contains the common Kubernetes manifests.
+-   **`kubernetes/overlays`**: Contains overlays for different deployment targets, such as a single-replica setup for development or a multi-replica setup for production on GCP with Cloud Filestore.
+
+For detailed instructions on how to deploy to Kubernetes, please refer to the **[Kubernetes Deployment Guide](./kubernetes/README.md)**.
+
+## Demo on Google Compute Engine
+
+This section provides a quick guide to deploying the Apigee Drupal Kickstart on a Google Compute Engine (GCE) VM.
+
+1.  **Set up environment variables**:
+    ```bash
+    export PROJECT_NAME=your-gcp-project-id
     export ZONE=us-central1-a
     export VM_NAME=apigee-portal-server
     export FIREWALL_NAME=apigee-portal-server-fw
-   ```
-2. Create a GCE VM instance with `container-optimized-os` image and create a firewall rule to allow HTTP traffic to this VM.
-	```
+    ```
+
+2.  **Create a GCE VM instance and firewall rule**:
+    ```bash
     gcloud compute instances create $VM_NAME \
         --project=$PROJECT_NAME \
         --zone=$ZONE \
         --machine-type=e2-medium \
-        --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default \
-        --no-restart-on-failure \
-        --maintenance-policy=TERMINATE \
-        --provisioning-model=SPOT \
-        --instance-termination-action=STOP \
-        --scopes=https://www.googleapis.com/auth/cloud-platform \
-        --tags=drupal-server,http-server \
-        --create-disk=auto-delete=yes,boot=yes,device-name=$VM_NAME,image=projects/cos-cloud/global/images/family/cos-stable,mode=rw,size=10,type=projects/$PROJECT_NAME/zones/$ZONE/diskTypes/pd-balanced \
-        --no-shielded-secure-boot \
-        --shielded-vtpm \
-        --shielded-integrity-monitoring \
-        --labels=goog-ec-src=vm_add-gcloud \
-        --reservation-affinity=any
-    
-    gcloud compute --project=$PROJECT_NAME firewall-rules create $FIREWALL_NAME --direction=INGRESS \
-        --priority=1000 --network=default --action=ALLOW --rules=tcp:80 --source-ranges=0.0.0.0/0 \
+        --network-interface=subnet=default \
+        --image-family=cos-stable \
+        --image-project=cos-cloud \
+        --tags=drupal-server,http-server
+
+    gcloud compute firewall-rules create $FIREWALL_NAME \
+        --project=$PROJECT_NAME \
+        --direction=INGRESS \
+        --priority=1000 \
+        --network=default \
+        --action=ALLOW \
+        --rules=tcp:80 \
+        --source-ranges=0.0.0.0/0 \
         --target-tags=drupal-server
+    ```
 
-	```
+3.  **SSH into the VM**:
+    ```bash
+    gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_NAME
+    ```
 
-3. SSH into the VM and run commands in next step
- 	 ```
-    gcloud compute ssh  $VM_NAME --zone=$ZONE --project=$PROJECT_NAME
-  	```
+4.  **Run the startup script**:
+    On the GCE instance, run the following commands:
+    ```bash
+    wget https://raw.githubusercontent.com/apigee/docker-apigee-drupal-kickstart/main/container-assets/gce-startup.sh
+    chmod +x gce-startup.sh
+    ./gce-startup.sh
+    ```
 
-4. Login into the GCE instance and run the following commands 
-  	```
-    wget https://gist.githubusercontent.com/giteshk/35875a36decd24c61a9d0fb5c6afad42/raw/6c0ec1d4dc1c0d16e42d971404509f53628ec4da/startup.sh
-    chmod +x startup.sh
-    bash ./startup.sh
-  	```
-
-5. Run through the Drupal installation wizard @ http://GCE-INSTANCE-EXTERNAL-IP
-  External IP can be located using :
-  	```
+5.  **Access the installation wizard**:
+    Find the external IP of your GCE instance:
+    ```bash
     gcloud compute instances describe $VM_NAME \
-      --format='get(networkInterfaces[0].accessConfigs[0].natIP)' \
-      --zone=$ZONE --project=$PROJECT_NAME
-  	```
+        --format='get(networkInterfaces[0].accessConfigs[0].natIP)' \
+        --zone=$ZONE --project=$PROJECT_NAME
+    ```
+    Navigate to `http://<EXTERNAL_IP>` in your browser and complete the Drupal installation.
 
-6.  Clean up commands:
-  	```
-    gcloud compute --project=$PROJECT_NAME firewall-rules delete $FIREWALL_NAME --quiet
-    gcloud compute instances delete $VM_NAME --project=$PROJECT_NAME  --zone=$ZONE --quiet
-  	```
-
+6.  **Clean up**:
+    ```bash
+    gcloud compute firewall-rules delete $FIREWALL_NAME --project=$PROJECT_NAME --quiet
+    gcloud compute instances delete $VM_NAME --project=$PROJECT_NAME --zone=$ZONE --quiet
+    ```
 
 ## Disclaimer
 
