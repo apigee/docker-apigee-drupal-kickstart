@@ -113,7 +113,7 @@ This section provides a quick guide to deploying the Apigee Drupal Kickstart on 
 4.  **Run the startup script**:
     On the GCE instance, run the following commands:
     ```bash
-    wget https://raw.githubusercontent.com/apigee/docker-apigee-drupal-kickstart/main/container-assets/gce-startup.sh
+    wget https://raw.githubusercontent.com/apigee/docker-apigee-drupal-kickstart/main/gce-startup.sh
     chmod +x gce-startup.sh
     ./gce-startup.sh
     ```
