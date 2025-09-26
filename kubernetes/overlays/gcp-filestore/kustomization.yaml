@@ -1,0 +1,11 @@
+# kubernetes/overlays/gcp-filestore/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: apigee-devportal
+
+resources:
+- ../../base
+
+patches:
+- path: deployment-patch.yaml

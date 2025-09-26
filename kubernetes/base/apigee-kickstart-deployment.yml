@@ -1,0 +1,56 @@
+# kubernetes/base/apigee-kickstart-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigee-kickstart
+spec:
+  selector:
+    matchLabels:
+      app: apigee-kickstart
+  template:
+    metadata:
+      labels:
+        app: apigee-kickstart
+    spec:
+      # This security context ensures that the mounted volume is owned by the
+      # 'www-data' group (GID 33), making it writable by the application container.
+      securityContext:
+        fsGroup: 33
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        # The Drupal application runs as user 'www-data' (UID 33) inside its container.
+        # This initContainer ensures the mounted volume is owned by this user.
+        command: ["sh", "-c", "chown -R 33:33 /mnt/files"]
+        volumeMounts:
+        - name: drupal-files
+          mountPath: /mnt/files
+      containers:
+      - name: apigee-kickstart
+        image: ghcr.io/apigee/docker-apigee-drupal-kickstart:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /health-check
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health-check
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 20
+        envFrom:
+        - secretRef:
+            name: apigee-kickstart-secret
+        volumeMounts:
+        - name: drupal-files
+          mountPath: /app/code/web/sites/default/files
+          subPath: public
+        - name: drupal-files
+          mountPath: /app/code/web/sites/default/private
+          subPath: private
+      # This volumes section will be patched by the overlays
+      volumes: []

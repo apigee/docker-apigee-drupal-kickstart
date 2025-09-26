@@ -1,0 +1,14 @@
+# kubernetes/overlays/gcp-filestore/deployment-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigee-kickstart
+spec:
+  replicas: 3
+  template:
+    spec:
+      volumes:
+      - name: drupal-files
+        nfs:
+          server: <FILESTORE_IP_ADDRESS>
+          path: /<FILESHARE_NAME>

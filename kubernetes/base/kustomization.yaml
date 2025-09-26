@@ -1,0 +1,19 @@
+# kubernetes/base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- namespace.yml
+- apigee-kickstart-database-deployment.yml
+- apigee-kickstart-database-pvc.yml
+- apigee-kickstart-database-service.yml
+- apigee-kickstart-service.yml
+- apigee-kickstart-deployment.yml
+
+secretGenerator:
+- name: apigee-kickstart-database-secret
+  envs:
+  - database.env
+- name: apigee-kickstart-secret
+  envs:
+  - application.env
