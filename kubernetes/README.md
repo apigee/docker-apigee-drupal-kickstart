@@ -13,6 +13,8 @@ This directory contains the Kubernetes manifests to deploy the Apigee Drupal Kic
 
 ## 1. Deployment
 
+This deployment will create a new Kubernetes namespace called `apigee-devportal`.
+
 First, choose a deployment overlay based on your needs. Follow the specific instructions in the overlay's README to deploy the application.
 
 -   **[Single-Replica (Default) Deployment Guide](./overlays/single-replica-pvc/README.md)**
