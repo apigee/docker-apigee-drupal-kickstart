@@ -16,12 +16,12 @@
 set -ex
 
 DRUSH='php -d memory_limit=-1 /usr/bin/drush'
-composer require drupal/restui -o --working-dir=/app/code --no-interaction
 
 FILE="/app/code/web/sites/default/private/salt.txt"
 
 if [ ! -f "$FILE" ]; then
   if [ "$AUTO_INSTALL_PORTAL" == "true" ]; then
+    composer require drupal/restui -o --working-dir=/app/code --no-interaction
     $DRUSH si apigee_devportal_kickstart --site-name="Apigee Developer Portal" \
       --account-name="$ADMIN_USER" --account-mail="$ADMIN_EMAIL" \
       --account-pass="$ADMIN_PASS" --site-mail="noreply@apigee.com" \

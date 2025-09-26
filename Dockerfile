@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM composer:2 as composer
+FROM composer:2 AS composer
 
-FROM php:8.1-fpm
+FROM php:8.3-fpm
 ENV DRUPAL_DATABASE_NAME=devportal \
     DRUPAL_DATABASE_USER=dbuser \
     DRUPAL_DATABASE_PASSWORD=dbpass \
@@ -24,6 +24,8 @@ ENV DRUPAL_DATABASE_NAME=devportal \
     ADMIN_USER=admin \
     ADMIN_PASS=admin \
     AUTO_INSTALL_PORTAL=false
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -44,8 +46,8 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app/code/web
 
-RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/10.x/composer.json -o /app/code/composer.json \
-    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/10.x/LICENSE.txt -o /app/code/LICENSE.txt
+RUN curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/11.x/composer.json -o /app/code/composer.json \
+    && curl https://raw.githubusercontent.com/apigee/devportal-kickstart-project-composer/11.x/LICENSE.txt -o /app/code/LICENSE.txt
 
 #OVERRIDE custom code folder if any
 COPY code /app/code
